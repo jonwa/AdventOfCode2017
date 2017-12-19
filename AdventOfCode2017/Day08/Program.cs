@@ -32,65 +32,40 @@ namespace Day8
 		}
 	}
 
-	public class Instruction
+	class Program
 	{
-		public string[] encoded { get; set; }
-
-		public Instruction(string decoded)
+		static void Main(string[] args)
 		{
-			encoded = decoded.Split(' ');
-		}
-	}
+			var input = File.ReadAllLines("../../input.txt");
 
-	public class Program
-	{
-		static void Run(string[] input)
-		{
-			var instructions = new List<Instruction>();
-			foreach (var i in input)
+			var instructions = new List<string[]>();
+			foreach (var instruction in input)
 			{
-				var instruction = new Instruction(i);
-				instructions.Add(instruction);
+				instructions.Add(instruction.Split(' '));
 			}
 
 			int highest = 0;
 			var registers = new Dictionary<string, int>();
 			foreach (var instruction in instructions)
 			{
-				if (!registers.ContainsKey(instruction.encoded[0]))
-					registers[instruction.encoded[0]] = 0;
-				if (!registers.ContainsKey(instruction.encoded[4]))
-					registers[instruction.encoded[4]] = 0;
+				if (!registers.ContainsKey(instruction[0]))
+					registers[instruction[0]] = 0;
+				if (!registers.ContainsKey(instruction[4]))
+					registers[instruction[4]] = 0;
 
-				if (instruction.encoded[5].Compare(registers[instruction.encoded[4]], int.Parse(instruction.encoded[6])))
+				if (instruction[5].Compare(registers[instruction[4]], int.Parse(instruction[6])))
 				{
-					registers[instruction.encoded[0]] = instruction.encoded[1].Operator(registers[instruction.encoded[0]], int.Parse(instruction.encoded[2]));
-					if (registers[instruction.encoded[0]] > highest)
+					registers[instruction[0]] = instruction[1].Operator(registers[instruction[0]], int.Parse(instruction[2]));
+					if (registers[instruction[0]] > highest)
 					{
-						highest = registers[instruction.encoded[0]];
+						highest = registers[instruction[0]];
 					}
 				}
 			}
 
-			var maxValue = registers.Values.Max();
-
-
-			Console.WriteLine("-------------------");
-			Console.WriteLine($"Part One: {maxValue}");
+			Console.WriteLine($"Part One: {registers.Values.Max()}");
 			Console.WriteLine($"Part Two: {highest}");
-			Console.WriteLine("-------------------");
-			Console.WriteLine();
-		}
 
-		static void Main(string[] args)
-		{
-			var test = File.ReadAllLines("../../test.txt");
-			var input = File.ReadAllLines("../../input.txt");
-
-			Console.WriteLine("Test");
-			Run(test);
-			Console.WriteLine("Solution");
-			Run(input);
 			Console.Read();
 		}
 	}
